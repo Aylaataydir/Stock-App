@@ -12,23 +12,26 @@ import { Input } from "@/components/ui/input"
 import loginImg from "../assets/login-img-1.jpg"
 import { Link, useNavigate } from "react-router-dom"
 import { Controller, useForm } from "react-hook-form"
-import { signInShema } from "../lib/schemas"
+import { signUpShema } from "../lib/schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
 import axios from "axios"
 import { useDispatch } from "react-redux"
 import { updateUserInfo } from "../features/authSlice"
 import { toast } from "sonner"
 
-export function SignInForm({ className, ...props }) {
+export function SignUpForm({ className, ...props }) {
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const form = useForm({
-    resolver: zodResolver(signInShema),
+    resolver: zodResolver(signUpShema),
     defaultValues: {
       username: "",
       password: "",
+      email: "",
+      firstName: "",
+      lastName: "",
     },
   })
 
@@ -38,11 +41,11 @@ export function SignInForm({ className, ...props }) {
 
     try {
 
-      const { data } = await axios.post("https://11123.fullstack.clarusway.com/auth/login", credentials)
+      const { data } = await axios.post("https://11123.fullstack.clarusway.com/users", credentials)
       console.log(data)
 
       dispatch(updateUserInfo(data))
-      
+
 
       toast.success("Login successfull!", {
         description: `Welcome Back ${data.user.username}`,
@@ -67,13 +70,13 @@ export function SignInForm({ className, ...props }) {
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
-        <CardContent className="grid p-0 md:grid-cols-2">
-          <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8">
+        <CardContent className="grid p-0 md:grid-cols-2 order-2">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8 order-2">
             <FieldGroup>
-              <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
+              <div className="flex flex-col items-center gap text-center">
+                <h1 className="text-2xl font-bold">Smart Stock System</h1>
                 <p className="text-balance text-muted-foreground">
-                  Sign in to your Smart Stock System account
+                  Sign up for a new account
                 </p>
               </div>
               <Controller
@@ -83,6 +86,42 @@ export function SignInForm({ className, ...props }) {
                   <Field className="" data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="username">Name</FieldLabel>
                     <Input {...field} id="username" aria-invalid={fieldState.invalid} />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
+              <div className="md:flex md:gap-3 ">
+                <Controller
+                  name="firstName"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field className="" data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="firstName">Firstname</FieldLabel>
+                      <Input {...field} id="firstName" aria-invalid={fieldState.invalid} />
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="lastName"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field className="" data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="lastName">Lastname</FieldLabel>
+                      <Input {...field} id="lastName" aria-invalid={fieldState.invalid} />
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )}
+                />
+              </div>
+
+              <Controller
+                name="email"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field className="" data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="email">Email</FieldLabel>
+                    <Input {...field} id="email" type="email" aria-invalid={fieldState.invalid} />
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
@@ -103,11 +142,22 @@ export function SignInForm({ className, ...props }) {
                   </Field>
                 )}
               />
+              <Controller
+                name="confirmPassword"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field className="" data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="confirmPassword">Confirm password</FieldLabel>
+                    <Input {...field} id="confirmPassword" aria-invalid={fieldState.invalid} />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
               <Field>
                 <Button className="cursor-pointer" disabled={isSubmitting} type="submit">{isSubmitting ? "Signing in..." : "Sign In"}</Button>
               </Field>
               <FieldDescription className="text-center">
-                Don&apos;t have an account? <Link to="/sign-up">Sign up</Link>
+                 Already have an account? <Link to="/sign-in">Sign up</Link>
               </FieldDescription>
             </FieldGroup>
           </form>
@@ -115,14 +165,10 @@ export function SignInForm({ className, ...props }) {
             <img
               src={loginImg}
               alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale" />
+              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale order-1" />
           </div>
         </CardContent>
       </Card>
-      <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </FieldDescription>
     </div >
   );
 }
