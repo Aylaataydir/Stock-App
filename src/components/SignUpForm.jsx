@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Field,
+  FieldError,
   FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import loginImg from "../assets/login-img-1.jpg"
@@ -32,6 +32,7 @@ export function SignUpForm({ className, ...props }) {
       email: "",
       firstName: "",
       lastName: "",
+      confirmPassword: ""
     },
   })
 
@@ -41,22 +42,19 @@ export function SignUpForm({ className, ...props }) {
 
     try {
 
-      const { data } = await axios.post("https://11123.fullstack.clarusway.com/users", credentials)
+      const { data } = await axios.post("https://11123.fullstack.clarusway.com/users/", credentials)
       console.log(data)
 
       dispatch(updateUserInfo(data))
 
-
-      toast.success("Login successfull!", {
-        description: `Welcome Back ${data.user.username}`,
+      toast.success("Sign up successful!", {
+        description: `Welcome ${data.data.username}`,
       })
 
       navigate("/stock")
-      console.log("navigate olmadi")
-
 
     } catch (error) {
-      toast.error("Login failed!", {
+      toast.error("Sign up failed!", {
         description: "Please check your credentials",
       })
 
@@ -72,8 +70,8 @@ export function SignUpForm({ className, ...props }) {
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2 order-2">
           <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8 order-2">
-            <FieldGroup>
-              <div className="flex flex-col items-center gap text-center">
+            <FieldGroup className="gap-4">
+              <div className="flex flex-col items-center  text-center">
                 <h1 className="text-2xl font-bold">Smart Stock System</h1>
                 <p className="text-balance text-muted-foreground">
                   Sign up for a new account
@@ -90,7 +88,7 @@ export function SignUpForm({ className, ...props }) {
                   </Field>
                 )}
               />
-              <div className="md:flex md:gap-3 ">
+              <div className="flex flex-col gap-4 md:flex-row md:gap-3    ">
                 <Controller
                   name="firstName"
                   control={form.control}
@@ -148,17 +146,17 @@ export function SignUpForm({ className, ...props }) {
                 render={({ field, fieldState }) => (
                   <Field className="" data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="confirmPassword">Confirm password</FieldLabel>
-                    <Input {...field} id="confirmPassword" aria-invalid={fieldState.invalid} />
+                    <Input {...field} id="confirmPassword" type="password" aria-invalid={fieldState.invalid} />
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
               <Field>
-                <Button className="cursor-pointer" disabled={isSubmitting} type="submit">{isSubmitting ? "Signing in..." : "Sign In"}</Button>
+                <Button className="cursor-pointer mt-3" disabled={isSubmitting} type="submit">{isSubmitting ? "Signing up..." : "Sign Up"}</Button>
               </Field>
-              <FieldDescription className="text-center">
-                 Already have an account? <Link to="/sign-in">Sign up</Link>
-              </FieldDescription>
+                <FieldDescription className="text-center">
+                  Already have an account? <Link to="/sign-in">Sign in</Link>
+                </FieldDescription>
             </FieldGroup>
           </form>
           <div className="relative hidden bg-muted md:block">

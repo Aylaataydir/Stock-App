@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const signInShema = z.object({
-    username: z.string("Invalid email address"),
+    username: z.string().min(1,"Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters")
 })
 

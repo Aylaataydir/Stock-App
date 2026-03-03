@@ -6,6 +6,7 @@ import {
   FieldDescription,
   FieldGroup,
   FieldLabel,
+  FieldError,
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
