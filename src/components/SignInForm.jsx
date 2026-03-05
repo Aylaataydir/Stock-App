@@ -11,19 +11,16 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import loginImg from "../assets/login-img-1.jpg"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { Controller, useForm } from "react-hook-form"
 import { signInShema } from "../lib/schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
-import axios from "axios"
-import { useDispatch } from "react-redux"
-import { updateUserInfo } from "../features/authSlice"
-import { toast } from "sonner"
+import useAuthCall from "../hooks/useAuthCall"
+
 
 export function SignInForm({ className, ...props }) {
 
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { signIn } = useAuthCall()
 
   const form = useForm({
     resolver: zodResolver(signInShema),
@@ -36,30 +33,8 @@ export function SignInForm({ className, ...props }) {
   const { isSubmitting } = form.formState
 
   const onSubmit = async (credentials) => {
-
-    try {
-
-      const { data } = await axios.post("https://11123.fullstack.clarusway.com/auth/login", credentials)
-      console.log(data)
-
-      dispatch(updateUserInfo(data))
-      
-
-      toast.success("Login successfull!", {
-        description: `Welcome Back ${data.user.username}`,
-      })
-
-      navigate("/stock")
-      console.log("navigate olmadi")
-
-
-    } catch (error) {
-      toast.error("Login failed!", {
-        description: "Please check your credentials",
-      })
-
-    }
-
+    
+    await signIn(credentials)
     console.log(credentials)
 
   }

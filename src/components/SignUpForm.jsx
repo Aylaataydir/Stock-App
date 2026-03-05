@@ -10,19 +10,16 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import loginImg from "../assets/login-img-1.jpg"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { Controller, useForm } from "react-hook-form"
 import { signUpShema } from "../lib/schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
-import axios from "axios"
-import { useDispatch } from "react-redux"
-import { updateUserInfo } from "../features/authSlice"
-import { toast } from "sonner"
+import useAuthCall from "../hooks/useAuthCall"
+
 
 export function SignUpForm({ className, ...props }) {
 
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { signUp } = useAuthCall()
 
   const form = useForm({
     resolver: zodResolver(signUpShema),
@@ -36,31 +33,12 @@ export function SignUpForm({ className, ...props }) {
     },
   })
 
+
   const { isSubmitting } = form.formState
 
   const onSubmit = async (credentials) => {
 
-    try {
-
-      const { data } = await axios.post("https://11123.fullstack.clarusway.com/users/", credentials)
-      console.log(data)
-
-      dispatch(updateUserInfo(data))
-
-      toast.success("Sign up successful!", {
-        description: `Welcome ${data.data.username}`,
-      })
-
-      navigate("/stock")
-
-    } catch (error) {
-      toast.error("Sign up failed!", {
-        description: "Please check your credentials",
-      })
-
-    }
-
-    console.log(credentials)
+    signUp(credentials)
 
   }
 
@@ -154,9 +132,9 @@ export function SignUpForm({ className, ...props }) {
               <Field>
                 <Button className="cursor-pointer mt-3" disabled={isSubmitting} type="submit">{isSubmitting ? "Signing up..." : "Sign Up"}</Button>
               </Field>
-                <FieldDescription className="text-center">
-                  Already have an account? <Link to="/sign-in">Sign in</Link>
-                </FieldDescription>
+              <FieldDescription className="text-center">
+                Already have an account? <Link to="/sign-in">Sign in</Link>
+              </FieldDescription>
             </FieldGroup>
           </form>
           <div className="relative hidden bg-muted md:block">

@@ -1,8 +1,15 @@
 import { z } from "zod";
 
 export const signInShema = z.object({
-    username: z.string().min(1,"Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters")
+    username: z.string().min(1, "Invalid email address"),
+    password: z
+        .string()
+        .min(1, "Required")
+        .min(8, "Password must be at least 8 characters")
+        .regex(/\d+/, "Must contain a digit")
+        .regex(/[a-z]/, "Must contain a lowercase letter")
+        .regex(/[A-Z]/, "Must contain an uppercase letter")
+        .regex(/[@$?!%&*]+/, "Must contain a special character (@$?!%&*)"),
 })
 
 export const signUpShema = z.object({
@@ -27,5 +34,5 @@ export const signUpShema = z.object({
     confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
     message: "Password don't match",
-    path:["confirmPassword"]
+    path: ["confirmPassword"]
 })
