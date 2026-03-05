@@ -14,10 +14,9 @@ import {
   SquareTerminal,
 } from "lucide-react"
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavMain } from "@/components/shared/sidebar/nav-main"
+import { NavUser } from "@/components/shared/sidebar/nav-user"
+import { TeamSwitcher } from "@/components/shared/sidebar/team-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -25,68 +24,61 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import {
+  BadgeDollarSign,
+  Warehouse,
+  CircleStar,
+  ShoppingCart,
+  Boxes,
+  ChartNetwork,
+} from "lucide-react";
 
 
 
 
 const data = {
 
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-  ],
-
-
   navMain: [
     {
       title: "Analytics",
       url: "/stock",
-      icon: SquareTerminal,
+      icon: ChartNetwork,
       isActive: true,
       items: [
         {
           title: "Overview",
-          url: "#",
+          url: "/stock",
         },
         {
           title: "Reports",
-          url: "#",
+          url: "/stock/reports",
         },
       ],
     },
     {
-      title: "Purhases",
-      url: "#",
-      icon: Bot
+      title: "Purchases",
+      url: "purchases",
+      icon: ShoppingCart,
     },
     {
       title: "Sales",
-      url: "#",
-      icon: BookOpen,
+      url: "sales",
+      icon: BadgeDollarSign,
     },
     {
       title: "Firms",
-      url: "#",
-      icon: Settings2,
+      url: "firms",
+      icon: Warehouse,
     },
     {
       title: "Brands",
-      url: "#",
-      icon: Settings2,
+      url: "brands",
+      icon: CircleStar,
     },
     {
       title: "Products",
-      url: "#",
-      icon: Settings2,
+      url: "products",
+      icon: Boxes,
     },
   ],
 }
@@ -97,14 +89,13 @@ export function AppSidebar({
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher  />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
