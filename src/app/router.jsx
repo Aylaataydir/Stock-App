@@ -6,6 +6,8 @@ import SignUp from "../pages/SignUp"
 import ProtectedRoute from "../layouts/ProtectedRoute"
 import { Children } from "react"
 import DashboardLayout from "../layouts/DashboardLayout"
+import Firms from "../pages/Firms"
+import FirmDetail from "../pages/FirmDetail"
 
 
 export const router = createBrowserRouter([
@@ -40,7 +42,11 @@ export const router = createBrowserRouter([
                     },
                     {
                         path: "firms",
-                        element: <div>firms page</div>
+                        element: <Firms />
+                    },
+                    {
+                        path: "firms/:id",
+                        element: <FirmDetail />
                     },
                     {
                         path: "sales",

@@ -20,12 +20,16 @@ export const authSlice = createSlice({
                 state.currentUser = { email, username, isAdmin, firstName, lastName };
             }
             state.token = payload.token;
+        },
+        cleanAuth: (state) => {
+            state.currentUser = null,
+            state.token = null
         }
     }
 })
 
 
-export const { updateUserInfo } = authSlice.actions
+export const { updateUserInfo, cleanAuth } = authSlice.actions
 
 export const selectedUser = (state) => state.auth.currentUser;
 export const selectAuthToken = (state) => state.auth.token

@@ -29,11 +29,23 @@ import {
 } from "@/components/ui/sidebar"
 import { selectedUser } from "../../../features/authSlice"
 import { useSelector } from "react-redux"
+import useAuthCall from "../../../hooks/useAuthCall"
+import { useTransition } from "react"
 
 export function NavUser() {
   const { isMobile } = useSidebar()
 
   const currentUser = useSelector(selectedUser)
+  const { signOut } = useAuthCall()
+
+  const [isPending, startTransition] = useTransition()
+
+
+  const handleSignOut = (e) => {
+    e.preventDefault()
+    startTransition(async() => await signOut())
+
+  }
 
   return (
     <SidebarMenu>
@@ -96,9 +108,10 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut className="sidebar-icon" />
-              Sign out
+            <DropdownMenuItem disabled={isPending} onSelect={(e) => handleSignOut(e)}>
+              <LogOut
+                className="sidebar-icon" />
+              {isPending ? "signing out..." : "Sign out"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

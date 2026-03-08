@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import authReducer from "../features/authSlice";
 import themeReducer from "../features/themeSlice";
+import stockReducer from "../features/stockSlice";
 import {
     persistStore,
     persistReducer,
@@ -23,6 +24,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
     auth: authReducer,
     theme: themeReducer,
+    stock: stockReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
