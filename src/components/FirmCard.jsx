@@ -15,12 +15,12 @@ export function FirmCard({firm}) {
     const { _id, address, image, name, phone, } = firm
 
   return (
-    <Card className="relative mx-auto w-full max-w-sm pt-0">
+    <Card className="relative mx-auto w-full max-w-sm pt-0 overflow-hidden">
       <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
       <img
         src={image}
         alt="Event cover"
-        className="relative z-20 aspect-video w-full object-cover "
+        className="relative aspect-video w-full object-cover "
       />
       <CardHeader>
         <CardAction>

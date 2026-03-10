@@ -23,16 +23,36 @@ const useStockCall = () => {
                     Authorization: `Token ${token}`,
                 }
             })
-            console.log(data.data)
-            dispatch(fetchSuccess({name, data:data.data}))
+            dispatch(fetchSuccess({ name, data: data.data }))
 
         } catch (error) {
             dispatch(fetchFail(error))
 
         }
     }
-    
-    return { getStockData }
+
+
+    const getFirmById = async (id) => {
+
+        try {
+            dispatch(fetchStart())
+            const { data } = await axios.get(`${BASE_URL}firms/${id}`, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                }
+            })
+            console.log(data.data)
+            dispatch(fetchSuccess({ name: "firm", data: data.data }))
+
+        } catch (error) {
+
+        }
+
+    }
+
+
+
+    return { getStockData, getFirmById }
 
 }
 

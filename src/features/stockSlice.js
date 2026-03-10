@@ -6,6 +6,7 @@ const initialState = {
     error: null,
     loading: false,
     firms: [],
+    firm:[],
     brands: [],
     categories: [],
     products: [],
