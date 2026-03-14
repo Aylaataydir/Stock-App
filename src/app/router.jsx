@@ -8,7 +8,9 @@ import { Children } from "react"
 import DashboardLayout from "../layouts/DashboardLayout"
 import Firms from "../pages/Firms"
 import FirmDetail from "../pages/FirmDetail"
+import Purchases from "../pages/Purchases"
 import Sales from "../pages/Sales"
+import Products from "../pages/Products"
 
 
 export const router = createBrowserRouter([
@@ -51,15 +53,15 @@ export const router = createBrowserRouter([
                     },
                     {
                         path: "sales",
-                        element: <div>sales page</div>
-                    },
-                    {
-                        path: "purchases",
                         element: <Sales/>
                     },
                     {
+                        path: "purchases",
+                        element: <Purchases />
+                    },
+                    {
                         path: "products",
-                        element: <div>products page</div>
+                        element: <Products/>
                     }
                 ]
             }
