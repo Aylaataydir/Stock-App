@@ -14,6 +14,29 @@ const Purchases = () => {
     const loading = useSelector((state) => state.stock.loading)
     const purchases = useSelector((state) => state.stock.purchases)
 
+
+    const [modalOpen, setModalOpen] = useState(false)
+    const [selectedPurchase, setSelectedPurchase] = useState(null)
+
+
+
+    const onEdit = (firm) => {
+        setModalOpen(true);
+        setSelectedPurchase(firm)
+    }
+
+    const handleModalChange = (isOpen) => {
+        if (!isOpen) {
+            setModalOpen(false)
+            setSelectedFirm(null)
+        } else {
+            setModalOpen(true)
+        }
+
+    }
+
+
+
     useEffect(() => {
         getStockData("purchases");
     }, []);
@@ -58,6 +81,7 @@ const Purchases = () => {
                     </div>
                 </div>
             )}
+            <PurchaseModal open={modalOpen} onOpenChange={handleModalChange} selectedPurchase={selectedPurchase} />
         </section>
     )
 }
@@ -87,6 +111,7 @@ import { useEffect } from 'react';
 import { TableSkeleton } from '../components/shared/Skeletons';
 import { NotFoundCard } from '../components/shared/InfoCard';
 import { Link } from 'react-router-dom';
+import PurchaseModal from '../components/PurchaseModal';
 
 
 const columns = [

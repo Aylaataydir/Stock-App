@@ -137,6 +137,9 @@ export function DataTable({ columns, data, searchableFields = [], searchPlaceHol
                             })}
                     </DropdownMenuContent>
                 </DropdownMenu>
+                <DropdownMenu>
+                    <Button>Add new</Button>
+                </DropdownMenu>
             </div>
             <div className="overflow-hidden rounded-md border">
                 <Table>
