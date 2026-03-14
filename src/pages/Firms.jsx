@@ -24,7 +24,6 @@ const Firms = () => {
     const onEdit = (firm) => {
         setModalOpen(true);
         setSelectedFirm(firm)
-        console.log(firm)
     }
 
     const handleModalChange = (isOpen) => {

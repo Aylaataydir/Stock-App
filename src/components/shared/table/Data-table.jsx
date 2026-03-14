@@ -44,7 +44,7 @@ import {
 
 
 
-export function DataTable({ columns, data, searchableFields = [], searchPlaceHolder = "Search..." }) {
+export function DataTable({ columns, data, searchableFields = [], searchPlaceHolder = "Search..." , handleModalChange}) {
 
 
     const [sorting, setSorting] = useState([])
@@ -138,7 +138,7 @@ export function DataTable({ columns, data, searchableFields = [], searchPlaceHol
                     </DropdownMenuContent>
                 </DropdownMenu>
                 <DropdownMenu>
-                    <Button>Add new</Button>
+                    <Button onClick={() => handleModalChange(true)} className="ms-2">Add new</Button>
                 </DropdownMenu>
             </div>
             <div className="overflow-hidden rounded-md border">

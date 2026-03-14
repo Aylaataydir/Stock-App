@@ -2,6 +2,7 @@ import axios from "axios"
 import { useDispatch, useSelector } from "react-redux"
 import { fetchFail, fetchStart, fetchSuccess } from "../features/stockSlice"
 import { selectAuthToken } from "../features/authSlice"
+import { toast } from "sonner"
 
 
 
@@ -51,18 +52,19 @@ const useStockCall = () => {
 
     }
 
-    const createStockData = async ({ name, createdInfo }) => {
-
+    const createStockData = async (name, createdInfo) => {
+        console.log(name)
         try {
 
-            await axios.put(`${BASE_URL}${name}`, createdInfo, {
-                header: {
+            await axios.post(`${BASE_URL}${name}/`, createdInfo, {
+                headers: {
                     Authorization: `Token ${token}`,
                 }
             })
 
+
             toast.success("Created Successfully!");
-            await getStockData(url)
+            await getStockData(name)
             return true;
 
         } catch (error) {
@@ -74,25 +76,46 @@ const useStockCall = () => {
 
     }
 
-    const updateStockData = async ({name, id, updatedInfo}) => {
+    const updateStockData = async (name, id, updatedInfo) => {
 
         try {
 
-            await axios.put(`${BASE_URL}${url}/${id}`, updatedInfo, {
+            await axios.put(`${BASE_URL}${name}/${id}`, updatedInfo, {
                 headers: {
                     Authorization: `Token ${token}`,
                 },
             })
+            toast.success("Updated Successfully!");
+            await getStockData(name)
+            return true
 
         } catch (error) {
-
+            dispatch(fetchFail(error));
+            toast.error("Update Failed!", { description: error.message });
+            return false;
         }
 
     }
 
+    // paralel fetching
+
+    const getStockResources = async (resources) => {
+        try {
+            await Promise.all(resources.map((resource) => getStockData(resource)));
+        } catch (error) {
+            const errMsg = getErrorMessage(error);
+            dispatch(fetchFail(errMsg));
+            console.log(error);
+            toast.error("Data could not be loaded", { description: errMsg });
+        }
+    };
 
 
-    return { getStockData, getFirmById, createStockData }
+
+
+
+
+    return { getStockData, getFirmById, createStockData, getStockResources, updateStockData }
 
 }
 

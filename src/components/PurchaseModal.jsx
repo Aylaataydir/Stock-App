@@ -7,6 +7,7 @@ import {
     FieldLabel,
     FieldError,
     FieldSeparator,
+    FieldContent
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
@@ -19,27 +20,39 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectSeparator,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { purchaseSchema } from "../lib/schemas"
 import useStockCall from "../hooks/useStockCall"
 import { useEffect } from "react"
+import { useSelector } from "react-redux"
 
 
 
 
-export default function PurchaseModal({ modalOpen, handleModalChange, selectedPurchase }) {
+export default function PurchaseModal({ open, onOpenChange, selectedPurchase }) {
 
-    const { createStockData, updateStockData } = useStockCall()
+    const { createStockData, updateStockData, getStockResources } = useStockCall()
     const isEditMode = Boolean(selectedPurchase)
 
+    const { firms, products, brands } = useSelector((state) => state.stock)
+    console.log(firms)
     const emptyPurchaseForm = {
         firmId: "",
         brandId: "",
         productId: "",
-        quantitiy: "",
-        price:"",
+        quantity: "",
+        price: "",
     };
+
 
     const form = useForm({
         resolver: zodResolver(purchaseSchema),
@@ -50,6 +63,9 @@ export default function PurchaseModal({ modalOpen, handleModalChange, selectedPu
 
 
     const onSubmit = async (formData) => {
+
+        console.log(formData)
+        
 
         const isSuccess = isEditMode
             ? await updateStockData("purchases", selectedPurchase._id, formData)
@@ -62,23 +78,35 @@ export default function PurchaseModal({ modalOpen, handleModalChange, selectedPu
 
     }
 
+
     useEffect(() => {
         if (!open) return;
+
         if (isEditMode) {
             form.reset({
-                name: selectedPurchase.name ?? "",
-                phone: selectedPurchase.phone ?? "",
-                address: selectedPurchase.address ?? "",
-                image: selectedPurchase.image ?? "",
+                firmId: selectedPurchase.firmId ?? "",
+                brandId: selectedPurchase.brandId ?? "",
+                productId: selectedPurchase.productId ?? "",
+                quantity: selectedPurchase.quantity ?? "",
+                price: selectedPurchase.price ?? "",
             });
-        } else {
-            form.reset(emptyPurchaseForm);
+            return;
         }
+        form.reset(emptyPurchaseForm);
     }, [selectedPurchase, form, isEditMode, open]);
 
 
+    useEffect(() => {
+
+        const requiredResources = ["firms", "brands", "products"];
+        if (!open) return;
+        getStockResources(requiredResources);
+
+    }, [open]);
+
+
     return (
-        <Dialog open={modalOpen} onOpenChange={handleModalChange} >
+        <Dialog open={open} onOpenChange={onOpenChange} >
             <DialogContent>
                 <DialogHeader className="mb-6">
                     <DialogTitle>
@@ -93,62 +121,164 @@ export default function PurchaseModal({ modalOpen, handleModalChange, selectedPu
                 <form onSubmit={form.handleSubmit(onSubmit)} >
                     <FieldGroup>
                         <Controller
-                            name="name"
+                            name="firmId"
                             control={form.control}
                             render={({ field, fieldState }) => (
-                                <Field className="" data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="username">Name</FieldLabel>
-                                    <Input {...field} id="username" aria-invalid={fieldState.invalid} />
-                                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="firm">Firm</FieldLabel>
+                                    <Select
+                                        name={field.name}
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                    >
+                                        <SelectTrigger
+                                            id="firm"
+                                            aria-invalid={fieldState.invalid}
+                                            className="min-w-30"
+                                        >
+                                            <SelectValue placeholder="Select firm" />
+                                        </SelectTrigger>
+                                        <SelectContent position="item-aligned">
+                                            <SelectItem value="auto">Select Firm</SelectItem>
+                                            <SelectSeparator />
+                                            {firms.map((firm) => (
+                                                <SelectItem key={firm._id} value={firm._id}>
+                                                    {firm.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
                                 </Field>
                             )}
                         />
                         <Controller
-                            name="phone"
+                            name="brandId"
                             control={form.control}
                             render={({ field, fieldState }) => (
-                                <Field className="" data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="phone">Phone</FieldLabel>
-                                    <Input {...field} id="phone" aria-invalid={fieldState.invalid} />
-                                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="brand">Brand</FieldLabel>
+                                    <Select
+                                        name={field.name}
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                    >
+                                        <SelectTrigger
+                                            id="brand"
+                                            aria-invalid={fieldState.invalid}
+                                            className="min-w-30"
+                                        >
+                                            <SelectValue placeholder="Select brand" />
+                                        </SelectTrigger>
+                                        <SelectContent position="item-aligned">
+                                            <SelectItem value="auto">Select Brand</SelectItem>
+                                            <SelectSeparator />
+                                            {brands.map((brand) => (
+                                                <SelectItem key={brand._id} value={brand._id}>
+                                                    {brand.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
                                 </Field>
                             )}
                         />
                         <Controller
-                            name="address"
+                            name="productId"
                             control={form.control}
                             render={({ field, fieldState }) => (
-                                <Field className="" data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="address">Address</FieldLabel>
-                                    <Input {...field} id="addres" aria-invalid={fieldState.invalid} />
-                                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="product">Product</FieldLabel>
+                                    <Select
+                                        name={field.name}
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                    >
+                                        <SelectTrigger
+                                            id="product"
+                                            aria-invalid={fieldState.invalid}
+                                            className="min-w-30"
+                                        >
+                                            <SelectValue placeholder="Select product" />
+                                        </SelectTrigger>
+                                        <SelectContent position="item-aligned">
+                                            <SelectItem value="auto">Select Product</SelectItem>
+                                            <SelectSeparator />
+                                            {products.map((product) => (
+                                                <SelectItem key={product._id} value={product._id}>
+                                                    {product.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
                                 </Field>
                             )}
                         />
                         <Controller
-                            name="image"
+                            name="quantity"
                             control={form.control}
                             render={({ field, fieldState }) => (
-                                <Field className="" data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="image">Image Link</FieldLabel>
-                                    <Input {...field} id="image" aria-invalid={fieldState.invalid} />
-                                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="quantity">Quantity</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        id="quantity"
+                                        type="number"
+                                        min="1"
+                                        aria-invalid={fieldState.invalid}
+                                        placeholder="Enter quantity"
+                                        autoComplete="off"
+                                        disabled={isSubmitting}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                        <Controller
+                            name="price"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="price">Price</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        id="price"
+                                        type="number"
+                                        min="1"
+                                        aria-invalid={fieldState.invalid}
+                                        placeholder="Enter unit price"
+                                        autoComplete="off"
+                                        disabled={isSubmitting}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
                                 </Field>
                             )}
                         />
                     </FieldGroup>
 
-                    <DialogFooter className="mt-6">
-                        <DialogClose className="flex gap-4">
-                            <Button className="cursor-pointer"
-                            > {isSubmitting
-                                ? isEditMode
-                                    ? "Updating Purchase..."
-                                    : "Creating Purchase..."
-                                : isEditMode
-                                    ? "Update Purchase"
-                                    : "Create Purchase"}
-                            </Button>
+                    <DialogFooter className="mt-6 flex gap-4">
+                        <Button className="cursor-pointer"
+                        > {isSubmitting
+                            ? isEditMode
+                                ? "Updating Purchase..."
+                                : "Creating Purchase..."
+                            : isEditMode
+                                ? "Update Purchase"
+                                : "Create Purchase"}
+                        </Button>
+                        <DialogClose asChild>
                             <Button className="cursor-pointer" variant="outline">Close</Button>
                         </DialogClose>
                     </DialogFooter>

@@ -3,11 +3,11 @@
 
 import DataTable from '../components/shared/table/Data-table'
 import { format } from "date-fns";
+import { useState, useEffect } from "react";
+
 
 
 const Purchases = () => {
-
-
 
     const { getStockData } = useStockCall();
     const error = useSelector(((state) => state.stock.error))
@@ -20,19 +20,27 @@ const Purchases = () => {
 
 
 
-    const onEdit = (firm) => {
+    const onEdit = (purchase) => {
+        setSelectedPurchase({
+            ...purchase,
+            firmId: purchase?.firmId?._id,
+            brandId: purchase?.brandId?._id,
+            productId: purchase?.productId?._id,
+            quantity: purchase?.quantity?.toString(),
+            price: purchase?.price?.toString(),
+        })
+
         setModalOpen(true);
-        setSelectedPurchase(firm)
+
     }
 
     const handleModalChange = (isOpen) => {
         if (!isOpen) {
             setModalOpen(false)
-            setSelectedFirm(null)
+            setSelectedPurchase(null)
         } else {
             setModalOpen(true)
         }
-
     }
 
 
@@ -42,6 +50,7 @@ const Purchases = () => {
     }, []);
 
 
+    const columns = getColumns({onEdit:onEdit})
 
     return (
         <section>
@@ -66,6 +75,7 @@ const Purchases = () => {
                             </div>
                         </div>
                         <DataTable
+                            handleModalChange={handleModalChange}
                             data={purchases}
                             columns={columns}
                             searchPlaceholder='Search firm, brand, product and quantity..'
@@ -107,15 +117,15 @@ import { Checkbox } from "@/components/ui/checkbox"
 import DataTableColumnHeader from '../components/shared/table/data-table-column-header'
 import useStockCall from '../hooks/useStockCall';
 import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
+
 import { TableSkeleton } from '../components/shared/Skeletons';
-import { NotFoundCard } from '../components/shared/InfoCard';
+import { ErrorCard, NotFoundCard } from '../components/shared/InfoCard';
 import { Link } from 'react-router-dom';
 import PurchaseModal from '../components/PurchaseModal';
 
 
-const columns = [
 
+const getColumns = ({ onEdit }) => [
     {
         id: "select",
         header: ({ table }) => (
@@ -211,7 +221,6 @@ const columns = [
             const purchase = row.original
             const firmId = purchase?._id ?? null
 
-
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -223,7 +232,10 @@ const columns = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Edit
+                        <DropdownMenuItem
+                            onClick={() => onEdit(purchase)}
+                        >
+                            Edit
                             <DropdownMenuShortcut>
                                 <Edit />
                             </DropdownMenuShortcut>
@@ -253,6 +265,4 @@ const columns = [
                 </DropdownMenu>
             )
         },
-    },
-
-]
+    },]
