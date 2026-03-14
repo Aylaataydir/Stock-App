@@ -26,7 +26,8 @@ const useStockCall = () => {
             dispatch(fetchSuccess({ name, data: data.data }))
 
         } catch (error) {
-            dispatch(fetchFail(error))
+            dispatch(fetchFail(error));
+            toast.error("Data could not be loaded", { description: error.message });
 
         }
     }
@@ -45,6 +46,45 @@ const useStockCall = () => {
             dispatch(fetchSuccess({ name: "firm", data: data.data }))
 
         } catch (error) {
+            dispatch(fetchFail(error));
+        }
+
+    }
+
+    const createStockData = async ({ name, createdInfo }) => {
+
+        try {
+
+            await axios.put(`${BASE_URL}${name}`, createdInfo, {
+                header: {
+                    Authorization: `Token ${token}`,
+                }
+            })
+
+            toast.success("Created Successfully!");
+            await getStockData(url)
+            return true;
+
+        } catch (error) {
+            dispatch(fetchFail(error));
+            toast.error("Create Failed!", { description: error.message });
+            return false;
+
+        }
+
+    }
+
+    const updateStockData = async ({name, id, updatedInfo}) => {
+
+        try {
+
+            await axios.put(`${BASE_URL}${url}/${id}`, updatedInfo, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            })
+
+        } catch (error) {
 
         }
 
@@ -52,7 +92,7 @@ const useStockCall = () => {
 
 
 
-    return { getStockData, getFirmById }
+    return { getStockData, getFirmById, createStockData }
 
 }
 
