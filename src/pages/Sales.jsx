@@ -16,7 +16,7 @@ const Sales = () => {
 
 
 
-    const { getStockData } = useStockCall();
+    const { getStockData, deleteStockData } = useStockCall();
     const error = useSelector(((state) => state.stock.error))
     const loading = useSelector((state) => state.stock.loading)
     const sales = useSelector((state) => state.stock.sales)
@@ -35,16 +35,23 @@ const Sales = () => {
         }
     }
 
-    const onEdit = () => {
-
+    const onEdit = (sale) => {
         setSelectedSale({
-
+            ...sale,
+            brandId: sale?.brandId?._id,
+            productId: sale?.productId?._id,
+            quantity: sale?.quantity?.toString(),
+            price: sale?.price?.toString(),
         })
+        
         setModalOpen(true)
-
     }
 
-    const onDelete = () => {
+  
+
+    const onDelete = async(id) => {
+
+     await deleteStockData("sales", id)
 
     }
 
@@ -96,7 +103,7 @@ const Sales = () => {
                     </div>
                 </div>
             )}
-            <SaleModal open={modalOpen} setSelectedSale={setSelectedSale} onOpenChange={handleModalChange} />
+            <SaleModal open={modalOpen} selectedSale={selectedSale} onOpenChange={handleModalChange} />
         </section>
     )
 }

@@ -257,6 +257,7 @@ export const getSaleColumns = ({ onEdit, onDelete }) => [
         cell: ({ row }) => {
             const sale = row.original
 
+
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -268,16 +269,18 @@ export const getSaleColumns = ({ onEdit, onDelete }) => [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Edit
+                        <DropdownMenuItem onClick={() => onEdit(sale)}>Edit
                             <DropdownMenuShortcut>
                                 <Edit />
                             </DropdownMenuShortcut>
                         </DropdownMenuItem>
-                        <DropdownMenuItem variant="destructive">Delete
-                            <DropdownMenuShortcut >
-                                <Delete className="text-destructive" />
-                            </DropdownMenuShortcut>
-                        </DropdownMenuItem>
+                        <AlertDial title="Delete Sale?" onDelete={() => onDelete(sale._id)}>
+                            <DropdownMenuItem onSelect={(e) => e.preventDefault()} variant="destructive">Delete
+                                <DropdownMenuShortcut >
+                                    <Delete className="text-destructive" />
+                                </DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                        </AlertDial>
                         <DropdownMenuLabel >Links</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>

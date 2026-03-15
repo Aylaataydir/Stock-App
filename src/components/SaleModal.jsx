@@ -42,9 +42,10 @@ export default function SaleModal({ open, onOpenChange, selectedSale }) {
 
     const { createStockData, updateStockData, getStockResources } = useStockCall()
     const isEditMode = Boolean(selectedSale)
+    console.log(selectedSale)
 
-    const { firms, products, brands } = useSelector((state) => state.stock)
-    console.log(firms)
+    const { products, brands } = useSelector((state) => state.stock)
+
     const emptySaleForm = {
         brandId: "",
         productId: "",
@@ -83,16 +84,17 @@ export default function SaleModal({ open, onOpenChange, selectedSale }) {
 
         if (isEditMode) {
             form.reset({
-                brandId: selectedSale.brandId ?? "",
-                productId: selectedSale.productId ?? "",
-                quantity: selectedSale.quantity ?? "",
-                price: selectedSale.price ?? "",
+                brandId: selectedSale?.brandId ?? "",
+                productId: selectedSale?.productId ?? "",
+                quantity: selectedSale?.quantity ?? "",
+                price: selectedSale?.price ?? "",
             });
             return;
         }
         form.reset(emptySaleForm);
     }, [selectedSale, form, isEditMode, open]);
 
+    
 
     useEffect(() => {
 
