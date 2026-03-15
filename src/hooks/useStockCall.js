@@ -97,16 +97,32 @@ const useStockCall = () => {
 
     }
 
+    const deleteStockData = async (name, id) => {
+        console.log(name, id)
+        try {
+            await axios.delete(`${BASE_URL}${name}/${id}`, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+            toast.success("Deleted Successfully!");
+            await getStockData(name);
+        } catch (error) {
+            console.log(error);
+            dispatch(fetchFail(error));
+            toast.error("Delete Failed!", { description: error.message });
+        }
+    };
+
     // paralel fetching
 
     const getStockResources = async (resources) => {
+
         try {
             await Promise.all(resources.map((resource) => getStockData(resource)));
         } catch (error) {
-            const errMsg = getErrorMessage(error);
-            dispatch(fetchFail(errMsg));
             console.log(error);
-            toast.error("Data could not be loaded", { description: errMsg });
+            toast.error("Data could not be loaded", { description: error.message });
         }
     };
 
@@ -115,7 +131,9 @@ const useStockCall = () => {
 
 
 
-    return { getStockData, getFirmById, createStockData, getStockResources, updateStockData }
+
+
+    return { getStockData, getFirmById, createStockData, getStockResources, updateStockData, deleteStockData }
 
 }
 

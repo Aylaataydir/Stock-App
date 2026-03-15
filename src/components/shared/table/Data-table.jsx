@@ -41,10 +41,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { LuSettings2 } from "react-icons/lu";
 
 
 
-export function DataTable({ columns, data, searchableFields = [], searchPlaceHolder = "Search..." , handleModalChange}) {
+export function DataTable({ columns, data, searchableFields = [], searchPlaceHolder = "Search...", handleModalChange }) {
 
 
     const [sorting, setSorting] = useState([])
@@ -112,7 +113,8 @@ export function DataTable({ columns, data, searchableFields = [], searchPlaceHol
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="ml-auto">
-                            Columns
+                            <LuSettings2 />
+                            View
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
